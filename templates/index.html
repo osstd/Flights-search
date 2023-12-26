@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .masthead {
+                background-image: url('/static/assets/img/bg.jpeg');
+                background-size: cover;
+                background-position: center;
+                color: #ffffff;
+                padding: 20px;
+            }
+
+        .masthead h1 {
+            margin-bottom: 20px;
+        }
+
+
+    </style>
+    <title>Flight Checker</title>
+</head>
+<body class="bg-light">
+<div class="container my-5">
+    <div class="card p-4 mx-auto" style="max-width: 600px;">
+        <div class="masthead text-center mb-4">
+            <h1 class="display-4">Flight Checker</h1>
+            <p class="lead">Check flight prices with ease</p>
+        </div>
+        {% if intro: %}
+        <form method="post" action="{{ url_for('index') }}">
+            <div class="form-group">
+                <label for="fly_from">Fly From:</label>
+                <input type="text" class="form-control" id="fly_from" name="from" placeholder="London"
+                       pattern="[A-Za-z ]+"
+                       title="input should only contain letters (both uppercase and lowercase) and spaces." required>
+                <label for="destinations">Destinations</label>
+                <input type="number" class="form-control" id="destinations" name="number"
+                       placeholder="Enter number of destinations to fly to. Up to 5 destinations" min="1" max="5"
+                       required>
+            </div>
+            <button type="submit" class="btn btn-primary">Next</button>
+        </form>
+        {% endif %}
+        {% if cityinput: %}
+        <form method="post" action="{{ url_for('input_city', number=number) }}">
+            <div class="form-group">
+                {% for number in range(number) %}
+                <label for="fly_to_{{number}}">Fly to:</label>
+                <input type="text" class="form-control" id="fly_to_{{number}}" name="to{{number}}"
+                       placeholder="Destination {{number+1}}" pattern="[A-Za-z ]+"
+                       title="input should only contain letters (both uppercase and lowercase) and spaces." required>
+                {% endfor %}
+            </div>
+            <button type="submit" class="btn btn-primary">Next</button>
+        </form>
+        {% endif %}
+        {% if details: %}
+        <form id="form" method="post" action="{{ url_for('flight_details') }}">
+            <div class="form-group">
+                <label for="date_from">Date from:</label>
+                <input type="date" class="form-control" id="date_from" name="date_f">
+                <label for="date_to">Date to:</label>
+                <input type="date" class="form-control" id="date_to" name="date_t">
+                <label for="nightsdf">Nights in destination from:</label>
+                <input type="number" class="form-control" id="nightsdf" name="nightsdf"
+                       placeholder="Enter number of number of nights to spend in destination from">
+                <label for="nightsdt">Nights in destination to:</label>
+                <input type="number" class="form-control" id="nightsdt" name="nightsdt" placeholder="To">
+                <label for="fly_from">Maximum stopovers:</label>
+                <input type="number" class="form-control" id="stopovers" name="stops" placeholder="Number of stopovers">
+            </div>
+            <button onclick="loadingH()" type="submit" class="btn btn-primary">Find flights</button>
+        </form>
+        {% endif %}
+
+        <div id="loading" style="display:none;">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <h1 style="text-align:center;">Please wait while looking for flights...</h1>
+                </div>
+            </div>
+        </div>
+
+        {% if cities: %}
+        <h1>Found the following flights:</h1>
+        {% for city in cities: %}
+        <ul>
+            <li>{{city}}</li>
+        </ul>
+        {% endfor %}
+        {% endif %}
+    </div>
+</div>
+<script>
+    function loadingH() {
+    var loader = document.getElementById('loading');
+    loader.style.display = 'block';
+
+    var form = document.getElementById('form');
+    form.style.display = 'none';
+    }
+
+
+</script>
+</body>
+</html>
+
