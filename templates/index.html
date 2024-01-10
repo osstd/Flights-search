@@ -25,6 +25,7 @@
         background: #c3fbf9;
         }
 
+
     </style>
     <title>Flight Checker</title>
 </head>
@@ -78,19 +79,32 @@
                 <label for="fly_from">Maximum stopovers:</label>
                 <input type="number" class="form-control" id="stopovers" name="stops" placeholder="Number of stopovers">
             </div>
+            <div>
+                <label for="currency">Choose currency:</label>
+                    <select id="currency" name="currency">
+                        <option value="USD">USD</option>
+                        <option value="CAD">CAD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="GBP">GBP</option>
+                        <option value="CHF">CHF</option>
+                        <option value="AUD">AUD</option>
+                    </select>
+            </div>
             <button onclick="loadingH()" type="submit" class="btn btn-primary">Find flights</button>
         </form>
 
         <div class="container mt-3 bm-3" id="alert">
             <div class="alert alert-info fixed-width-alert" role="alert">
-                    The default criteria for any of the above options will be used in case of no input for that or all options.<br>
-                    <ul>
-                        <li>Date from: tomorrow</li>
-                        <li>Date to: six months from tomorrow</li>
-                        <li>Nights range from: 7</li>
-                        <li>To: 28</li>
-                        <li>Maximum stopovers: 0</li>
-                    </ul>
+                The default criteria for any of the above options will be used in case of no input for that or all
+                options.<br>
+                <ul>
+                    <li>Date from: tomorrow</li>
+                    <li>Date to: six months from tomorrow</li>
+                    <li>Nights range from: 7</li>
+                    <li>To: 28</li>
+                    <li>Maximum stopovers: 0</li>
+                    <li>Currency: USD</li>
+                </ul>
             </div>
         </div>
         {% endif %}
@@ -114,6 +128,15 @@
             <a class="btn btn-primary" href="{{url_for('index')}}">Search again</a>
         </div>
         {% endif %}
+
+        {% if err: %}
+        <div class="alert alert-warning fixed-width-alert" role="alert">
+            {{err}}
+        </div>
+        <div class="text-center">
+            <a class="btn btn-primary" href="{{url_for('index')}}">Search again</a>
+        </div>
+        {% endif %}
     </div>
 </div>
 <script>
@@ -127,6 +150,7 @@
     var alert = document.getElementById('alert');
     alert.style.display = 'none';
     }
+
 
 </script>
 </body>
