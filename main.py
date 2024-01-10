@@ -44,12 +44,10 @@ def flight_details():
     if request.method == 'POST':
         if request.form['date_f']:
             from_time = datetime.strptime(request.form['date_f'], '%Y-%m-%d')
-            print(from_time)
         else:
             from_time = tomorrow
         if request.form['date_t']:
             to_time = datetime.strptime(request.form['date_t'], '%Y-%m-%d')
-            print(to_time)
         else:
             to_time = six_month_from_today
         if request.form['nightsdf']:
@@ -81,10 +79,8 @@ def flight_search(from_time, to_time, nights_from, nights_to, stops):
                                          nights_to,
                                          stops)
 
-            city[
-                'result'] = f"Found a route! Only ${flight.price} to fly from {flight.origin_city}-{flight.origin_airport} to {flight.destination_city}-{flight.destination_airport}, from {flight.out_date} to {flight.return_date}."
+            city['result'] = f"Found a route! Only ${flight.price} to fly from {flight.origin_city}-{flight.origin_airport} to {flight.destination_city}-{flight.destination_airport}, from {flight.out_date} to {flight.return_date}."
             results.append(city['result'])
-    print("i'm here")
     return results
 
 

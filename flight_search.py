@@ -40,7 +40,6 @@ class FlightSearch:
         try:
             data = response.json()["data"][0]
         except IndexError:
-            print(f"No flights found for {destination_city_code}.")
             return None
 
         flight_data = FlightData(
@@ -53,5 +52,4 @@ class FlightSearch:
             return_date=datetime.utcfromtimestamp(data["route"][1]['dTimeUTC']).strftime('%Y-%m-%d %H:%M:%S UTC'),
         )
 
-        print(f"{flight_data.destination_city}: ${flight_data.price}")
         return flight_data
