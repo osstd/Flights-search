@@ -11,8 +11,8 @@ headers = {
 
 
 class FlightSearch:
-
-    async def check_code(self, city_name):
+    @staticmethod
+    async def check_code(city_name):
 
         query = {
             'term': city_name,
@@ -31,7 +31,8 @@ class FlightSearch:
                 else:
                     return None, response.status
 
-    async def find_flights(self, origin_city_code, destination_city_code, from_time, to_time, nights_from, nights_to,
+    @staticmethod
+    async def find_flights(origin_city_code, destination_city_code, from_time, to_time, nights_from, nights_to,
                            stops, currency):
         query = {
             'fly_from': origin_city_code,
@@ -66,28 +67,3 @@ class FlightSearch:
                         return None, None
                 else:
                     return None, response.status
-        # try:
-        #     response = requests.get(url=f"{TEQUILA_ENDPOINT}/search", params=query, headers=headers)
-        #     response.raise_for_status()
-        #     try:
-        #         data = response.json()["data"][0]
-        #         flight_data = FlightData(
-        #             price=data["price"],
-        #             origin_city=data["route"][0]["cityFrom"],
-        #             origin_airport=data["route"][0]["flyFrom"],
-        #             destination_city=data["route"][0]["cityTo"],
-        #             destination_airport=data["route"][0]["flyTo"],
-        #             out_date=datetime.utcfromtimestamp(data["route"][0]['dTimeUTC']).strftime('%Y-%m-%d %H:%M:%S UTC'),
-        #             return_date=datetime.utcfromtimestamp(data["route"][1]['dTimeUTC']).strftime(
-        #                 '%Y-%m-%d %H:%M:%S UTC'),
-        #         )
-        #         return flight_data, None
-        #     except IndexError:
-        #         flight_data = None
-        #         return flight_data, None
-        # except requests.exceptions.HTTPError as err:
-        #     return None, err
-        # except requests.exceptions.RequestException as err:
-        #     return None, err
-        # except Exception as err:
-        #     return None, err
