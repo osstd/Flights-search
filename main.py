@@ -1,3 +1,4 @@
+import asyncio
 from flight_search import FlightSearch
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for, jsonify
@@ -63,44 +64,49 @@ def flight_details():
         else:
             max_stopovers = 0
         currency = request.form['currency']
-        results_ = flight_search(from_time, to_time, nights_in_dst_from, nights_in_dst_to, max_stopovers, currency)
+        results_ = asyncio.run(
+            flight_search(from_time, to_time, nights_in_dst_from, nights_in_dst_to, max_stopovers, currency))
 
         return render_template('index.html', cities=results_)
     return render_template('index.html', details=True)
 
 
-def flight_search(from_time, to_time, nights_from, nights_to, stops, currency):
-    origin_city['iataCode'] = search.check_code(origin_city['city'])
+async def flight_search(from_time, to_time, nights_from, nights_to, stops, currency):
+    origin_city['iataCode'], err = await search.check_code(origin_city['city'])
     results = []
+
+    if err or not origin_city['iataCode']:
+        return [f"{origin_city['city'].capitalize()}: Error finding IATA code, {err}"]
+
+    tasks = []
     for city in cities:
         if city['city']:
-            city['iataCode'], err = search.check_code(city['city'])
-            if not city['iataCode']:
-                city[
-                    'result'] = f"{city['city'].capitalize()}:\nNo iataCode was found for this city, please check name and try again"
-                results.append(city['result'])
-                continue
-            elif err:
-                city['result'] = f"{city['city'].capitalize()}:\nError, {err}"
-                results.append(city['result'])
-                continue
-            else:
-                flight, err = search.find_flights(origin_city['iataCode'], city['iataCode'], from_time, to_time,
-                                                  nights_from,
-                                                  nights_to, stops, currency)
+            tasks.append(asyncio.create_task(
+                process_city(city, from_time, to_time, nights_from, nights_to, stops, currency)))
 
-                if not flight:
-                    city['result'] = f"{city['city'].capitalize()}:\nNo flight results were found for this search " \
-                                     f"criteria"
-                elif err:
-                    city['result'] = f"{city['city'].capitalize()}:\nError, {err}"
-                else:
-                    city[
-                        'result'] = f"{city['city'].capitalize()},\nfound a route!\n Only {currency}{flight.price} to fly from {flight.origin_city}-" \
-                                    f"{flight.origin_airport} to {flight.destination_city}-{flight.destination_airport}, " \
-                                    f"from {flight.out_date} to {flight.return_date}."
-                results.append(city['result'])
+    city_results = await asyncio.gather(*tasks)
+    results.extend(city_results)
     return results
+
+
+async def process_city(city, from_time, to_time, nights_from, nights_to, stops, currency):
+    print(f'started thread for {city["city"]}')
+    city['iataCode'], err = await search.check_code(city['city'])
+    if not city['iataCode']:
+        return f"{city['city'].capitalize()}:\nNo IATA code was found for this city, please check the name and try again"
+    elif err:
+        return f"{city['city'].capitalize()}:\nError, {err}"
+
+    flight, err = await search.find_flights(origin_city['iataCode'], city['iataCode'], from_time, to_time,
+                                            nights_from, nights_to, stops, currency)
+    if not flight:
+        return f"{city['city'].capitalize()}:\nNo flight results were found for this search criteria"
+    elif err:
+        return f"{city['city'].capitalize()}:\nError, {err}"
+    else:
+        return f"{city['city'].capitalize()},\nfound a route!\nOnly {currency}{flight.price} to fly from {flight.origin_city}-" \
+               f"{flight.origin_airport} to {flight.destination_city}-{flight.destination_airport}, " \
+               f"from {flight.out_date} to {flight.return_date}."
 
 
 if __name__ == '__main__':
