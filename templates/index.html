@@ -1,37 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='assets/favicon.ico') }}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        .masthead {
-                background-image: url('/static/assets/img/bg.jpeg');
-                background-size: cover;
-                background-position: center;
-                color: #ffffff;
-                padding: 20px;
-            }
-
-        .masthead h1 {
-            margin-bottom: 20px;
-        }
-        .btn-primary {
-        background: #87ceeb;
-        border-color: #87ceeb;
-        }
-        .alert {
-        background: #c3fbf9;
-        }
-
-
-    </style>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link
+            rel="icon"
+            type="image/png"
+            href="{{ url_for('static', filename='assets/favicon.ico') }}"
+    />
+    <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+            integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+            crossorigin="anonymous"
+    />
+    <link
+            rel="stylesheet"
+            href="{{url_for('static', filename='css/require.css')}}"
+    />
+    <script
+            src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"
+    ></script>
     <title>Flight Checker</title>
 </head>
 <body class="bg-light">
+<div class="preloader" data-preloader>
+    <div class="preloader-circle"></div>
+</div>
+
 <div class="container my-5">
-    <div class="card p-4 mx-auto" style="max-width: 600px;">
+    <div class="card p-4 mx-auto" style="max-width: 600px">
         <div class="masthead text-center mb-4">
             <h1 class="display-4">Flight Checker</h1>
             <p class="lead">Check flight prices with ease</p>
@@ -40,63 +40,111 @@
         <form method="post" action="{{ url_for('index') }}">
             <div class="form-group">
                 <label for="fly_from">Fly From:</label>
-                <input type="text" class="form-control" id="fly_from" name="from" placeholder="London"
-                       pattern="[A-Za-z ]+"
-                       title="input should only contain letters (both uppercase and lowercase) and spaces." required>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="fly_from"
+                        name="from"
+                        placeholder="London"
+                        pattern="[A-Za-z ]+"
+                        title="input should only contain letters (both uppercase and lowercase) and spaces."
+                        required
+                />
                 <label for="destinations">Destinations</label>
-                <input type="number" class="form-control" id="destinations" name="number"
-                       placeholder="Enter number of destinations to fly to. Up to 5 destinations" min="1" max="5"
-                       required>
+                <input
+                        type="number"
+                        class="form-control"
+                        id="destinations"
+                        name="number"
+                        placeholder="Enter number of destinations to fly to. Up to 5 destinations"
+                        min="1"
+                        max="5"
+                        required
+                />
             </div>
             <button type="submit" class="btn btn-primary">Next</button>
         </form>
-        {% endif %}
-        {% if cityinput: %}
+        {% endif %} {% if cityinput: %}
         <form method="post" action="{{ url_for('input_city', number=number) }}">
             <div class="form-group">
                 {% for number in range(number) %}
                 <label for="fly_to_{{number}}">Fly to:</label>
-                <input type="text" class="form-control" id="fly_to_{{number}}" name="to{{number}}"
-                       placeholder="Destination {{number+1}}" pattern="[A-Za-z ]+"
-                       title="input should only contain letters (both uppercase and lowercase) and spaces." required>
+                <input
+                        type="text"
+                        class="form-control"
+                        id="fly_to_{{number}}"
+                        name="to{{number}}"
+                        placeholder="Destination {{number+1}}"
+                        pattern="[A-Za-z ]+"
+                        title="input should only contain letters (both uppercase and lowercase) and spaces."
+                        required
+                />
                 {% endfor %}
             </div>
             <button type="submit" class="btn btn-primary">Next</button>
         </form>
-        {% endif %}
-        {% if details: %}
+        {% endif %} {% if details: %}
         <form id="form" method="post" action="{{ url_for('flight_details') }}">
             <div class="form-group">
                 <label for="date_from">Date from:</label>
-                <input type="date" class="form-control" id="date_from" name="date_f">
+                <input
+                        type="date"
+                        class="form-control"
+                        id="date_from"
+                        name="date_f"
+                />
                 <label for="date_to">Date to:</label>
-                <input type="date" class="form-control" id="date_to" name="date_t">
+                <input
+                        type="date"
+                        class="form-control"
+                        id="date_to"
+                        name="date_t"
+                />
                 <label for="nightsdf">Nights in destination from:</label>
-                <input type="number" class="form-control" id="nightsdf" name="nightsdf"
-                       placeholder="Enter range of nights to spend in destination, from">
+                <input
+                        type="number"
+                        class="form-control"
+                        id="nightsdf"
+                        name="nightsdf"
+                        placeholder="Enter range of nights to spend in destination, from"
+                />
                 <label for="nightsdt">Nights in destination to:</label>
-                <input type="number" class="form-control" id="nightsdt" name="nightsdt" placeholder="To">
+                <input
+                        type="number"
+                        class="form-control"
+                        id="nightsdt"
+                        name="nightsdt"
+                        placeholder="To"
+                />
                 <label for="fly_from">Maximum stopovers:</label>
-                <input type="number" class="form-control" id="stopovers" name="stops" placeholder="Number of stopovers">
+                <input
+                        type="number"
+                        class="form-control"
+                        id="stopovers"
+                        name="stops"
+                        placeholder="Number of stopovers"
+                />
             </div>
             <div>
                 <label for="currency">Choose currency:</label>
-                    <select id="currency" name="currency">
-                        <option value="USD">USD</option>
-                        <option value="CAD">CAD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="GBP">GBP</option>
-                        <option value="CHF">CHF</option>
-                        <option value="AUD">AUD</option>
-                    </select>
+                <select id="currency" name="currency">
+                    <option value="USD">USD</option>
+                    <option value="CAD">CAD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="CHF">CHF</option>
+                    <option value="AUD">AUD</option>
+                </select>
             </div>
-            <button onclick="loadingH()" type="submit" class="btn btn-primary">Find flights</button>
+            <button onclick="loadingH()" type="submit" class="btn btn-primary">
+                Find flights
+            </button>
         </form>
 
         <div class="container mt-3 bm-3" id="alert">
             <div class="alert alert-info fixed-width-alert" role="alert">
-                The default criteria for any of the above options will be used in case of no input for that or all
-                options.<br>
+                The default criteria for any of the above options will be used in
+                case of no input for that or all options.<br/>
                 <ul>
                     <li>Date from: tomorrow</li>
                     <li>Date to: six months from tomorrow</li>
@@ -109,10 +157,15 @@
         </div>
         {% endif %}
 
-        <div id="loading" style="display:none;">
+        <div id="loading" style="display: none">
             <div class="container">
                 <div class="row justify-content-center">
-                    <h1 style="text-align:center;">Please wait while searching for flights...</h1>
+                    <div class="the-spinner"></div>
+                    <div>
+                        <p style="text-align: center">
+                            Please wait while searching for flights...
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -125,34 +178,22 @@
         </ul>
         {% endfor %}
         <div class="text-center">
-            <a class="btn btn-primary" href="{{url_for('index')}}">Search again</a>
+            <a class="btn btn-primary" href="{{url_for('index')}}"
+            >Search again</a
+            >
         </div>
-        {% endif %}
-
-        {% if err: %}
+        {% endif %} {% if err: %}
         <div class="alert alert-warning fixed-width-alert" role="alert">
             {{err}}
         </div>
         <div class="text-center">
-            <a class="btn btn-primary" href="{{url_for('index')}}">Search again</a>
+            <a class="btn btn-primary" href="{{url_for('index')}}"
+            >Search again</a
+            >
         </div>
         {% endif %}
     </div>
 </div>
-<script>
-    function loadingH() {
-    var loader = document.getElementById('loading');
-    loader.style.display = 'block';
-
-    var form = document.getElementById('form');
-    form.style.display = 'none';
-
-    var alert = document.getElementById('alert');
-    alert.style.display = 'none';
-    }
-
-
-</script>
+<script src="{{url_for('static', filename='js/require.js')}}"></script>
 </body>
 </html>
-

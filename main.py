@@ -1,6 +1,6 @@
 from flight_search import FlightSearch
 from datetime import datetime, timedelta
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 import os
 
 search = FlightSearch()
@@ -76,7 +76,8 @@ def flight_search(from_time, to_time, nights_from, nights_to, stops, currency):
         if city['city']:
             city['iataCode'], err = search.check_code(city['city'])
             if not city['iataCode']:
-                city['result'] = f"{city['city'].capitalize()}:\nNo iataCode was found for this city, please check name and try again"
+                city[
+                    'result'] = f"{city['city'].capitalize()}:\nNo iataCode was found for this city, please check name and try again"
                 results.append(city['result'])
                 continue
             elif err:
@@ -94,9 +95,10 @@ def flight_search(from_time, to_time, nights_from, nights_to, stops, currency):
                 elif err:
                     city['result'] = f"{city['city'].capitalize()}:\nError, {err}"
                 else:
-                    city['result'] = f"{city['city'].capitalize()},\nfound a route!\n Only {currency}{flight.price} to fly from {flight.origin_city}-" \
-                                     f"{flight.origin_airport} to {flight.destination_city}-{flight.destination_airport}, " \
-                                     f"from {flight.out_date} to {flight.return_date}."
+                    city[
+                        'result'] = f"{city['city'].capitalize()},\nfound a route!\n Only {currency}{flight.price} to fly from {flight.origin_city}-" \
+                                    f"{flight.origin_airport} to {flight.destination_city}-{flight.destination_airport}, " \
+                                    f"from {flight.out_date} to {flight.return_date}."
                 results.append(city['result'])
     return results
 
