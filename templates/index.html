@@ -65,7 +65,7 @@
             <button type="submit" class="btn btn-primary">Next</button>
         </form>
         {% endif %} {% if cityinput: %}
-        <form method="post" action="{{ url_for('input_city', number=number) }}">
+        <form method="post" action="{{ url_for('input_city', origin=origin, number=number) }}">
             <div class="form-group">
                 {% for number in range(number) %}
                 <label for="fly_to_{{number}}">Fly to:</label>
@@ -84,7 +84,8 @@
             <button type="submit" class="btn btn-primary">Next</button>
         </form>
         {% endif %} {% if details: %}
-        <form id="form" method="post" action="{{ url_for('flight_details') }}">
+        <form id="form" method="post"
+              action="{{ url_for('flight_details', origin=origin, destinations=destinations) }}">
             <div class="form-group">
                 <label for="date_from">Date from:</label>
                 <input
@@ -170,22 +171,29 @@
             </div>
         </div>
 
-        {% if cities: %}
+        {% if results: %}
         <h1>Found the following flights:</h1>
-        {% for city in cities: %}
-        <ul>
-            <li>{{city}}</li>
-        </ul>
+        {% for result in results: %}
+
+        <div class="mb-3">
+            <h3>{{ result.city.name.capitalize() }}</h3>
+            {% if result.error %}
+            <div class="alert alert-warning" role="alert">
+                {{ result.error }}
+            </div>
+            {% elif result.flight_data %}
+            <ul>
+                <li>Price: {{ result.flight_data.price }}</li>
+                <li>From: {{ result.flight_data.origin_city }} ({{ result.flight_data.origin_airport }})</li>
+                <li>To: {{ result.flight_data.destination_city }} ({{ result.flight_data.destination_airport }})</li>
+                <li>Outbound: {{ result.flight_data.out_date }}</li>
+                <li>Return: {{ result.flight_data.return_date }}</li>
+            </ul>
+            {% else %}
+            <p>No flight data available.</p>
+            {% endif %}
+        </div>
         {% endfor %}
-        <div class="text-center">
-            <a class="btn btn-primary" href="{{url_for('index')}}"
-            >Search again</a
-            >
-        </div>
-        {% endif %} {% if err: %}
-        <div class="alert alert-warning fixed-width-alert" role="alert">
-            {{err}}
-        </div>
         <div class="text-center">
             <a class="btn btn-primary" href="{{url_for('index')}}"
             >Search again</a

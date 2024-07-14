@@ -61,7 +61,7 @@ efficiency. It leverages Flask for the web framework and asyncio for concurrency
 1. Run the application:
 
     ```bash
-    python main.py
+    python app.py
     ```
 
 2. Open your browser and navigate to `http://127.0.0.1:5000/`
